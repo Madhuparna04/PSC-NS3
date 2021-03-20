@@ -1,0 +1,46 @@
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+def build(bld):
+    if not bld.env['ENABLE_EXAMPLES']:
+        return;
+
+    obj = bld.create_ns3_program('example-udp-group-echo',
+                                 ['psc'])
+    obj.source = 'example-udp-group-echo.cc'
+
+    obj = bld.create_ns3_program('uav-mobility-energy-example', 
+                                 ['core', 'energy', 'mobility', 'psc'])
+    obj.source = 'uav-mobility-energy-example.cc'
+
+    obj = bld.create_ns3_program('example-mcptt-wifi-adhoc',
+                                 ['psc', 'wifi'])
+    obj.source = 'example-mcptt-wifi-adhoc.cc'
+
+    obj = bld.create_ns3_program('mcptt-lte-sl-out-of-covrg-comm',
+                                 ['core', 'lte', 'network','mobility', 'internet', 'applications', 'psc'])
+    obj.source = 'mcptt-lte-sl-out-of-covrg-comm.cc'
+
+    obj = bld.create_ns3_program('example-intel-http',
+                                 ['psc'])
+    obj.source = 'example-intel-http.cc'
+    
+    obj = bld.create_ns3_program('camad-2019-communication',
+                                 ['core', 'lte', 'network','mobility', 'internet', 'applications', 'psc'])
+    obj.source = [
+        'camad-2019/camad-2019-communication.cc',
+        'camad-2019/lte-sl-ue-controller-camad-2019.cc',
+    ]
+    
+    obj = bld.create_ns3_program('camad-2019-connection',
+                                 ['core', 'lte', 'network','mobility', 'internet', 'applications', 'psc'])
+    obj.source = [
+        'camad-2019/camad-2019-connection.cc',
+        'camad-2019/lte-sl-ue-controller-camad-2019.cc',
+    ]
+    
+    obj = bld.create_ns3_program('camad-2019-discovery',
+                                 ['core', 'lte', 'network','mobility', 'internet', 'applications', 'psc'])
+    obj.source = [
+        'camad-2019/camad-2019-discovery.cc',
+        'camad-2019/lte-sl-ue-controller-camad-2019.cc',
+    ]
