@@ -2715,6 +2715,8 @@ def register_types(module):
     module.add_class('RrFfMacScheduler', parent=root_module['ns3::FfMacScheduler'])
     ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler [class]
     module.add_class('RrSlFfMacScheduler', parent=root_module['ns3::FfMacScheduler'])
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler [class]
+    module.add_class('PscSlFfMacScheduler', parent=root_module['ns3::FfMacScheduler'])
     ## lte-rrc-header.h (module 'lte'): ns3::RrcAsn1Header [class]
     module.add_class('RrcAsn1Header', parent=root_module['ns3::Asn1Header'])
     ## lte-rrc-header.h (module 'lte'): ns3::RrcDlCcchMessage [class]
@@ -4499,6 +4501,7 @@ def register_methods(root_module):
     register_Ns3RrComponentCarrierManager_methods(root_module, root_module['ns3::RrComponentCarrierManager'])
     register_Ns3RrFfMacScheduler_methods(root_module, root_module['ns3::RrFfMacScheduler'])
     register_Ns3RrSlFfMacScheduler_methods(root_module, root_module['ns3::RrSlFfMacScheduler'])
+    register_Ns3RrSlFfMacScheduler_methods(root_module, root_module['ns3::PscSlFfMacScheduler'])
     register_Ns3RrcAsn1Header_methods(root_module, root_module['ns3::RrcAsn1Header'])
     register_Ns3RrcDlCcchMessage_methods(root_module, root_module['ns3::RrcDlCcchMessage'])
     register_Ns3RrcDlDcchMessage_methods(root_module, root_module['ns3::RrcDlDcchMessage'])
@@ -43086,6 +43089,57 @@ def register_Ns3RrFfMacScheduler_methods(root_module, cls):
 def register_Ns3RrSlFfMacScheduler_methods(root_module, cls):
     ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler::RrSlFfMacScheduler(ns3::RrSlFfMacScheduler const & arg0) [constructor]
     cls.add_constructor([param('ns3::RrSlFfMacScheduler const &', 'arg0')])
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler::RrSlFfMacScheduler() [constructor]
+    cls.add_constructor([])
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::DoDispose() [member function]
+    cls.add_method('DoDispose', 
+                   'void', 
+                   [], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::FfMacCschedSapProvider * ns3::RrSlFfMacScheduler::GetFfMacCschedSapProvider() [member function]
+    cls.add_method('GetFfMacCschedSapProvider', 
+                   'ns3::FfMacCschedSapProvider *', 
+                   [], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::FfMacSchedSapProvider * ns3::RrSlFfMacScheduler::GetFfMacSchedSapProvider() [member function]
+    cls.add_method('GetFfMacSchedSapProvider', 
+                   'ns3::FfMacSchedSapProvider *', 
+                   [], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::LteFfrSapUser * ns3::RrSlFfMacScheduler::GetLteFfrSapUser() [member function]
+    cls.add_method('GetLteFfrSapUser', 
+                   'ns3::LteFfrSapUser *', 
+                   [], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): static ns3::TypeId ns3::RrSlFfMacScheduler::GetTypeId() [member function]
+    cls.add_method('GetTypeId', 
+                   'ns3::TypeId', 
+                   [], 
+                   is_static=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::SetFfMacCschedSapUser(ns3::FfMacCschedSapUser * s) [member function]
+    cls.add_method('SetFfMacCschedSapUser', 
+                   'void', 
+                   [param('ns3::FfMacCschedSapUser *', 's')], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::SetFfMacSchedSapUser(ns3::FfMacSchedSapUser * s) [member function]
+    cls.add_method('SetFfMacSchedSapUser', 
+                   'void', 
+                   [param('ns3::FfMacSchedSapUser *', 's')], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::SetLteFfrSapProvider(ns3::LteFfrSapProvider * s) [member function]
+    cls.add_method('SetLteFfrSapProvider', 
+                   'void', 
+                   [param('ns3::LteFfrSapProvider *', 's')], 
+                   is_virtual=True)
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::TransmissionModeConfigurationUpdate(uint16_t rnti, uint8_t txMode) [member function]
+    cls.add_method('TransmissionModeConfigurationUpdate', 
+                   'void', 
+                   [param('uint16_t', 'rnti'), param('uint8_t', 'txMode')])
+    return
+
+def register_Ns3PscSlFfMacScheduler_methods(root_module, cls):
+    ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler::RrSlFfMacScheduler(ns3::RrSlFfMacScheduler const & arg0) [constructor]
+    cls.add_constructor([param('ns3::PscSlFfMacScheduler const &', 'arg0')])
     ## rr-sl-ff-mac-scheduler.h (module 'lte'): ns3::RrSlFfMacScheduler::RrSlFfMacScheduler() [constructor]
     cls.add_constructor([])
     ## rr-sl-ff-mac-scheduler.h (module 'lte'): void ns3::RrSlFfMacScheduler::DoDispose() [member function]
