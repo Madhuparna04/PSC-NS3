@@ -321,6 +321,7 @@ PscSlFfMacScheduler::DoCschedPoolConfigReq (const struct  FfMacCschedSapProvider
 
   std::map <uint32_t, PoolInfo>::iterator it = m_poolAllocations.find (params.m_group);
   NS_ASSERT_MSG (it == m_poolAllocations.end (), "Cannot add existing pool");
+  NS_LOG_INFO("Pool m_group :" << params.m_group);
   m_poolAllocations.insert (std::pair <uint32_t, PoolInfo> (params.m_group, info));
 }
 
@@ -1244,6 +1245,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
   std::map <uint32_t, PoolInfo>::iterator poolIt;
   for (poolIt = m_poolAllocations.begin (); poolIt != m_poolAllocations.end (); poolIt++)
     {
+      NS_LOG_INFO("INSIDE LOOP 1");
       if (!poolIt->second.m_init)
         {
           poolIt->second.m_npscch = poolIt->second.m_pool->GetNPscch ();
@@ -1264,8 +1266,23 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
 
       std::map <uint16_t,uint32_t>::iterator it;
 
-      for (it = poolIt->second.m_ceSlBsrRxed.begin (); it != poolIt->second.m_ceSlBsrRxed.end (); it++)
-        {
+      //int counter = 0;
+      //for (it = poolIt->second.m_ceSlBsrRxed.begin (); it != poolIt->second.m_ceSlBsrRxed.end (); it++)
+        it = poolIt->second.m_ceSlBsrRxed.begin ();
+       // int counter = 0;
+        NS_LOG_INFO(poolIt->second.m_ceSlBsrRxed.size());
+        
+        while (it != poolIt->second.m_ceSlBsrRxed.end ()) {
+                NS_LOG_INFO("INSIDE LOOP 2");
+
+/*
+          if(counter < 3) {
+            counter ++;
+            it++;
+            continue;
+          }
+          */
+          
           if (poolIt->second.m_nextAllocation.find ((*it).first) == poolIt->second.m_nextAllocation.end ())
             {
               //new allocation
@@ -1309,6 +1326,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
                 {
                   NS_LOG_INFO (this << " Subframe " << txIt->subframe.frameNo << "/" << txIt->subframe.subframeNo << ": rbStart=" << (uint32_t) txIt->rbStart << ", rbLen=" << (uint32_t) txIt->nbRb);
                 }
+          poolIt->second.m_ceSlBsrRxed.erase(it++);
 
             }
           // else we already allocated for this UE, nothing to do since we have fixed allocation
@@ -1316,9 +1334,11 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
           else
             {
               NS_LOG_DEBUG("UE already allocated for this SC period");
+              it++;
             }
+
         }
-      poolIt->second.m_ceSlBsrRxed.clear ();
+      //poolIt->second.m_ceSlBsrRxed.clear ();
     }
 
 
@@ -1357,7 +1377,9 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
           if (allocIt != userIt->second.m_psschTx.end () && (*allocIt).subframe.frameNo == frameNo && (*allocIt).subframe.subframeNo == subframeNo)
             {
               //User transmitting in this subframe, reserve RBs
-              NS_LOG_INFO (this << " Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
+              if (userIt->first == last_rnti)
+                last_done = true;
+              NS_LOG_INFO (this << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
               for (int j = (*allocIt).rbStart; j < (*allocIt).rbStart + (*allocIt).nbRb; j++)
                 {
                   slAllocationMap.at (j) = userIt->first;
@@ -1756,7 +1778,7 @@ void
 PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider::SchedUlMacCtrlInfoReqParameters& params)
 {
   NS_LOG_FUNCTION (this);
-
+  NS_LOG_INFO(params.m_sfnSf);
   std::map <uint16_t,uint32_t>::iterator it;
   std::map <uint16_t,uint32_t>::iterator itSlBsr;
 
@@ -1764,6 +1786,7 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
     {
       if ( params.m_macCeList.at (i).m_macCeType == MacCeListElement_s::BSR )
         {
+          NS_LOG_INFO("oNLY BSR");
           // buffer status report
           // note that this scheduler does not differentiate the
           // allocation according to which LCGs have more/less bytes
@@ -1802,12 +1825,17 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
           //the index in the buffer identifies the group
 
           uint16_t rnti = params.m_macCeList.at (i).m_rnti;
+
+         
+          
+
           //get the pool for this destination
           std::map <uint16_t,std::vector <uint32_t> >::iterator ueIt = m_uesDestinations.find (rnti);
           NS_ASSERT_MSG (ueIt != m_uesDestinations.end (), "No destinations found for " << rnti);
 
           NS_ASSERT_MSG (ueIt->second.size () > 0, "Destinations empty for " << rnti);
 
+NS_LOG_INFO ("sIZE OF UEIT" << ueIt->second.size ());
           //check the report
           for (uint8_t dest = 0; dest < ueIt->second.size (); ++dest)
             {
@@ -1819,6 +1847,35 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
                   std::map <uint32_t, PoolInfo>::iterator poolIt = m_poolAllocations.find (destination);
                   NS_ASSERT_MSG (poolIt != m_poolAllocations.end (), "Sidelink destination " << destination << "unknown.");
 
+          if (!last_done)
+            {
+                  pending_rnti.push_back(rnti);
+              continue;
+            }
+else{
+  if(pending_rnti.size() == 0)
+  {
+    last_done = false;
+    last_rnti = rnti;
+  }
+  else{
+    if(*pending_rnti.begin() != rnti) {
+      pending_rnti.push_back(rnti);
+        continue;
+    }
+      
+    else {
+      pending_rnti.pop_front();
+            last_done = false;
+            last_rnti = rnti;
+    }
+  }
+            
+}
+                  //if (poolIt->second.m_ceSlBsrRxed.size() < 1)
+                  {
+                   
+            
                   itSlBsr = poolIt->second.m_ceSlBsrRxed.find (rnti);
                   if (itSlBsr == poolIt->second.m_ceSlBsrRxed.end ())
                     {
@@ -1832,6 +1889,8 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
                       (*itSlBsr).second = buffer;
                       NS_LOG_INFO (this << " Update RNTI " << rnti << " Sidelink queue " << buffer);
                     }
+                  }
+
                 }
             }
         }
