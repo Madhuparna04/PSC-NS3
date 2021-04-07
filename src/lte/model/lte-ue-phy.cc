@@ -1269,7 +1269,7 @@ void
 LteUePhy::DoSendLteControlMessage (Ptr<LteControlMessage> msg)
 {
   NS_LOG_FUNCTION (this << msg);
-
+  NS_LOG_INFO ("SENDING CONTROL MESSGAE HERE");
   SetControlMessages (msg);
 }
 

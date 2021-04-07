@@ -673,6 +673,7 @@ LteUeMac::SendReportBufferStatus (void)
     }
   MacCeListElement_s bsr;
   bsr.m_rnti = m_rnti;
+
   bsr.m_macCeType = MacCeListElement_s::BSR;
 
   // BSR is reported for each LCG
@@ -733,6 +734,18 @@ LteUeMac::SendSidelinkReportBufferStatus (void)
 
   MacCeListElement_s bsr;
   bsr.m_rnti = m_rnti;
+
+
+  if( m_rnti%2 == 0) {
+    bsr.is_psc = false;
+NS_LOG_INFO ("Even");
+  }
+  else {
+    bsr.is_psc = true;
+NS_LOG_INFO ("Odd");
+
+  }
+  
   bsr.m_macCeType = MacCeListElement_s::SLBSR;
 
   // SL BSR is reported for each Group Index

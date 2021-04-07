@@ -164,6 +164,9 @@ int main (int argc, char *argv[])
     LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
         LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
         LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
+      LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
+            LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
+
 
 
   //Set the UEs power in dBm

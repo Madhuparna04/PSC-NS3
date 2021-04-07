@@ -643,6 +643,7 @@ LteEnbMac::DoSubframeIndication (uint32_t frameNo, uint32_t subframeNo)
     {
       FfMacSchedSapProvider::SchedUlMacCtrlInfoReqParameters ulMacReq;
       ulMacReq.m_sfnSf = ((0x3FF & frameNo) << 4) | (0xF & subframeNo);
+      
       ulMacReq.m_macCeList.insert (ulMacReq.m_macCeList.begin (), m_ulCeReceived.begin (), m_ulCeReceived.end ());
       m_ulCeReceived.erase (m_ulCeReceived.begin (), m_ulCeReceived.end ());
       m_schedSapProvider->SchedUlMacCtrlInfoReq (ulMacReq);
@@ -759,6 +760,7 @@ LteEnbMac::DoReportMacCeToScheduler (MacCeListElement_s bsr)
   NS_LOG_FUNCTION (this);
   NS_LOG_DEBUG (this << " bsr Size " << (uint16_t) m_ulCeReceived.size ());
   //send to LteCcmMacSapUser
+  NS_LOG_INFO ( "ISPSC" << bsr.is_psc);
   m_ulCeReceived.push_back (bsr); // this to called when LteUlCcmSapProvider::ReportMacCeToScheduler is called
   NS_LOG_DEBUG (this << " bsr Size after push_back " << (uint16_t) m_ulCeReceived.size ());
 }

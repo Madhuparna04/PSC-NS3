@@ -420,6 +420,7 @@ NoOpComponentCarrierManager::DoUlReceiveMacCe (MacCeListElement_s bsr, uint8_t c
     }
   else if (bsr.m_macCeType == MacCeListElement_s::SLBSR)
     {
+      NS_LOG_INFO ("App type " << bsr.is_psc);
       // find the component carrier SAP and deliver the SLBSR
       auto sapIt = m_ccmMacSapProviderMap.find (componentCarrierId);
       if (sapIt == m_ccmMacSapProviderMap.end ())
