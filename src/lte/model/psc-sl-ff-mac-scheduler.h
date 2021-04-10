@@ -121,6 +121,10 @@ private:
   // (See 4.1 for description of the primitives)
   //
 
+uint32_t last_done = 0;
+uint16_t last_rnti;
+std::list<uint16_t> pending_rnti;
+std::set<uint16_t> curr_rnti;
   /**
    * \brief CSched cell config request
    * \param params FfMacCschedSapProvider::CschedCellConfigReqParameters

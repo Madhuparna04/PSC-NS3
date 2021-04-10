@@ -1850,7 +1850,7 @@ NS_LOG_INFO ("sIZE OF UEIT" << ueIt->second.size ());
           if (!last_done)
             {
                   pending_rnti.push_back(rnti);
-              continue;
+                  continue;
             }
 else{
   if(pending_rnti.size() == 0)
