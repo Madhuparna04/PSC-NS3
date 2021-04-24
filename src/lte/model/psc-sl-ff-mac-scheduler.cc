@@ -1227,6 +1227,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
 {
   NS_LOG_FUNCTION (this << " UL - Frame no. " << (params.m_sfnSf >> 4) << " subframe no. " << (0xF & params.m_sfnSf) << " size " << params.m_ulInfoList.size ());
 
+  //bool not_done = true;
   RefreshUlCqiMaps ();
 
   // Generate RBs map
@@ -1266,22 +1267,12 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
 
       std::map <uint16_t,uint32_t>::iterator it;
 
-      //int counter = 0;
       //for (it = poolIt->second.m_ceSlBsrRxed.begin (); it != poolIt->second.m_ceSlBsrRxed.end (); it++)
         it = poolIt->second.m_ceSlBsrRxed.begin ();
-       // int counter = 0;
         NS_LOG_INFO(poolIt->second.m_ceSlBsrRxed.size());
         
         while (it != poolIt->second.m_ceSlBsrRxed.end ()) {
                 NS_LOG_INFO("INSIDE LOOP 2");
-
-/*
-          if(counter < 3) {
-            counter ++;
-            it++;
-            continue;
-          }
-          */
           
           if (poolIt->second.m_nextAllocation.find ((*it).first) == poolIt->second.m_nextAllocation.end ())
             {
@@ -1326,7 +1317,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
                 {
                   NS_LOG_INFO (this << " Subframe " << txIt->subframe.frameNo << "/" << txIt->subframe.subframeNo << ": rbStart=" << (uint32_t) txIt->rbStart << ", rbLen=" << (uint32_t) txIt->nbRb);
                 }
-          poolIt->second.m_ceSlBsrRxed.erase(it++);
+          //poolIt->second.m_ceSlBsrRxed.erase(it++);
 
             }
           // else we already allocated for this UE, nothing to do since we have fixed allocation
@@ -1336,9 +1327,10 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
               NS_LOG_DEBUG("UE already allocated for this SC period");
               it++;
             }
-
         }
-      //poolIt->second.m_ceSlBsrRxed.clear ();
+      poolIt->second.m_ceSlBsrRxed.clear ();
+      
+      
     }
 
 
@@ -1370,16 +1362,29 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
         }
 
       //check PSSCH allocation for each user in the pool
+      
+      int ran = rand();
+      bool comm = false;
+      if (ran%psc_imp == 0)
+        comm = true;
       for (std::map <uint16_t, PoolUserAllocation>::iterator userIt = poolIt->second.m_currentAllocation.begin (); userIt != poolIt->second.m_currentAllocation.end (); userIt++)
         {
           //check if this user is transmitting in this subframe
           std::list<SidelinkCommResourcePool::SidelinkTransmissionInfo>::iterator allocIt = userIt->second.m_psschTx.begin ();
           if (allocIt != userIt->second.m_psschTx.end () && (*allocIt).subframe.frameNo == frameNo && (*allocIt).subframe.subframeNo == subframeNo)
             {
-              //User transmitting in this subframe, reserve RBs
-              if (userIt->first == last_rnti)
-                last_done = true;
+              
+              if (!comm) {
+                if (! psc[ userIt->first ])
+                  continue;
+              }
+              else{
+                if (psc[ userIt->first ])
+                  continue;
+              }
               NS_LOG_INFO (this << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
+              
+              
               for (int j = (*allocIt).rbStart; j < (*allocIt).rbStart + (*allocIt).nbRb; j++)
                 {
                   slAllocationMap.at (j) = userIt->first;
@@ -1389,6 +1394,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
               userIt->second.m_psschTx.erase (allocIt);
             }
         }
+        
     }
 
   // update with RACH allocation map
@@ -1784,6 +1790,9 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
 
   for (unsigned int i = 0; i < params.m_macCeList.size (); i++)
     {
+      NS_LOG_INFO ("IF PSC" << params.m_macCeList.at (i).is_psc);
+
+        
       if ( params.m_macCeList.at (i).m_macCeType == MacCeListElement_s::BSR )
         {
           NS_LOG_INFO("oNLY BSR");
@@ -1826,7 +1835,7 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
 
           uint16_t rnti = params.m_macCeList.at (i).m_rnti;
 
-         
+          psc[rnti] = params.m_macCeList.at (i).is_psc;
           
 
           //get the pool for this destination
@@ -1835,7 +1844,7 @@ PscSlFfMacScheduler::DoSchedUlMacCtrlInfoReq (const struct FfMacSchedSapProvider
 
           NS_ASSERT_MSG (ueIt->second.size () > 0, "Destinations empty for " << rnti);
 
-NS_LOG_INFO ("sIZE OF UEIT" << ueIt->second.size ());
+          NS_LOG_INFO ("sIZE OF UEIT" << ueIt->second.size ());
           //check the report
           for (uint8_t dest = 0; dest < ueIt->second.size (); ++dest)
             {
@@ -1847,32 +1856,8 @@ NS_LOG_INFO ("sIZE OF UEIT" << ueIt->second.size ());
                   std::map <uint32_t, PoolInfo>::iterator poolIt = m_poolAllocations.find (destination);
                   NS_ASSERT_MSG (poolIt != m_poolAllocations.end (), "Sidelink destination " << destination << "unknown.");
 
-          if (!last_done)
-            {
-                  pending_rnti.push_back(rnti);
-                  continue;
-            }
-else{
-  if(pending_rnti.size() == 0)
-  {
-    last_done = false;
-    last_rnti = rnti;
-  }
-  else{
-    if(*pending_rnti.begin() != rnti) {
-      pending_rnti.push_back(rnti);
-        continue;
-    }
-      
-    else {
-      pending_rnti.pop_front();
-            last_done = false;
-            last_rnti = rnti;
-    }
-  }
-            
-}
-                  //if (poolIt->second.m_ceSlBsrRxed.size() < 1)
+
+
                   {
                    
             
@@ -1892,7 +1877,10 @@ else{
                   }
 
                 }
-            }
+            } 
+
+
+
         }
     } //end for
 

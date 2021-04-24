@@ -131,7 +131,7 @@ int main (int argc, char *argv[])
   // Configure the scheduler
   Config::SetDefault ("ns3::PscSlFfMacScheduler::Itrp", UintegerValue (0));
   //The number of RBs allocated per UE for Sidelink
-  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (20));
+  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (10));
 
   //Set the frequency
 
@@ -162,10 +162,10 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
     LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
-        LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
-        LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
-      LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
-            LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
+      //  LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
+       // LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
+      //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
+         //   LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
 
 
