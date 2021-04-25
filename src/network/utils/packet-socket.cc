@@ -122,6 +122,12 @@ PacketSocket::Bind6 (void)
   return(Bind());
 }
 
+void
+PacketSocket::SetPsc (uint32_t psc)
+{
+  return;
+}
+
 int
 PacketSocket::Bind (const Address &address)
 { 

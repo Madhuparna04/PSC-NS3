@@ -82,6 +82,7 @@ public:
    * \param arpCache the ARP cache
    */
   void SetArpCache (Ptr<ArpCache> arpCache);
+  void SetPsc (uint32_t psc);
 
   /**
    * \returns the underlying NetDevice. This method cannot return zero.

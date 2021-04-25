@@ -530,6 +530,7 @@ UdpSocketImpl::DoSendTo (Ptr<Packet> p, Ipv4Address dest, uint16_t port, uint8_t
       p->ReplacePacketTag (priorityTag);
     }
 
+  
   Ptr<Ipv4> ipv4 = m_node->GetObject<Ipv4> ();
 
   // Locally override the IP TTL for this socket
@@ -1205,7 +1206,9 @@ UdpSocketImpl::SetAllowBroadcast (bool allowBroadcast)
 void
 UdpSocketImpl::SetPsc (uint32_t psc)
 {
+  NS_LOG_INFO(this << "PSC SET HERE" << psc);
   m_psc = psc;
+  m_udp->SetPsc(m_psc);
 }
 
 bool

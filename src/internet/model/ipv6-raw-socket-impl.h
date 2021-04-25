@@ -101,6 +101,7 @@ public:
   virtual int Close ();
   virtual int ShutdownSend ();
   virtual int ShutdownRecv ();
+  virtual void SetPsc (uint32_t psc);
   virtual int Connect (const Address& address);
   virtual int Listen ();
   virtual uint32_t GetTxAvailable () const;

@@ -241,7 +241,10 @@ bool
 EpcUeNas::Send (Ptr<Packet> packet, uint16_t protocolNumber)
 {
   NS_LOG_FUNCTION (this << packet << protocolNumber);
-
+  NS_LOG_INFO ("EPC NAS " << m_device->GetPsc());
+  uint32_t psc = m_device->GetPsc();
+  NS_LOG_INFO("EPC NAS PSC" << psc);
+  
   switch (m_state)
     {
     case ACTIVE:

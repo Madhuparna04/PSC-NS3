@@ -41,4 +41,14 @@ NetDevice::~NetDevice ()
   NS_LOG_FUNCTION (this);
 }
 
+void
+NetDevice::SetPsc (uint32_t psc) {
+  return;
+}
+
+uint32_t
+NetDevice::GetPsc (void) {
+  return 2;
+}
+
 } // namespace ns3

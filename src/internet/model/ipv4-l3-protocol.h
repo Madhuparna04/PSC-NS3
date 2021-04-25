@@ -119,6 +119,8 @@ public:
   Ptr<Socket> CreateRawSocket (void);
   void DeleteRawSocket (Ptr<Socket> socket);
 
+  virtual void SetPsc (uint32_t psc);
+
   virtual void Insert (Ptr<IpL4Protocol> protocol);
   virtual void Insert (Ptr<IpL4Protocol> protocol, uint32_t interfaceIndex);
 
@@ -626,6 +628,8 @@ private:
    * \param [in] iter Iterator into duplicate map to remove
    */
   void RemoveDuplicates (void);
+
+  uint32_t m_psc;
 
   bool                m_enableDpd;    //!< Enable multicast duplicate packet detection
   DupMap_t            m_dups;         //!< map of packet duplicate tuples to expiry event

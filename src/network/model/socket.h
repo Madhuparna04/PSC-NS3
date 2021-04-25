@@ -297,6 +297,7 @@ public:
    * implemented for Tcp sockets by a half close.
    */
   virtual int ShutdownRecv (void) = 0;
+  virtual void SetPsc (uint32_t psc);
 
   /**
    * \brief Initiate a connection to a remote host

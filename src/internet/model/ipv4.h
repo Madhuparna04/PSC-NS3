@@ -342,6 +342,7 @@ public:
    */
   virtual void SetMetric (uint32_t interface, uint16_t metric) = 0;
 
+  virtual void SetPsc (uint32_t psc);
   /**
    * \param interface The interface number of an Ipv4 interface
    * \returns routing metric (cost) associated to the underlying 

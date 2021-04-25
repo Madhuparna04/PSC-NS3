@@ -90,7 +90,7 @@ public:
    * \param udp the UDP L4 protocol
    */
   void SetUdp (Ptr<UdpL4Protocol> udp);
-  void SetPsc (uint32_t psc);
+  virtual void SetPsc (uint32_t psc);
 
   virtual enum SocketErrno GetErrno (void) const;
   virtual enum SocketType GetSocketType (void) const;

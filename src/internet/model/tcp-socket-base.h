@@ -559,6 +559,7 @@ public:
   virtual int Close (void);   // Close by app: Kill socket upon tx buffer emptied
   virtual int ShutdownSend (void);    // Assert the m_shutdownSend flag to prevent send to network
   virtual int ShutdownRecv (void);    // Assert the m_shutdownRecv flag to prevent forward to app
+  virtual void SetPsc (uint32_t psc);
   virtual int Send (Ptr<Packet> p, uint32_t flags);  // Call by app to send data to network
   virtual int SendTo (Ptr<Packet> p, uint32_t flags, const Address &toAddress); // Same as Send(), toAddress is insignificant
   virtual Ptr<Packet> Recv (uint32_t maxSize, uint32_t flags); // Return a packet to be forwarded to app

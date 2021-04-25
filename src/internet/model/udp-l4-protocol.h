@@ -244,6 +244,7 @@ public:
   // From IpL4Protocol
   virtual IpL4Protocol::DownTargetCallback GetDownTarget (void) const;
   virtual IpL4Protocol::DownTargetCallback6 GetDownTarget6 (void) const;
+  void SetPsc(uint32_t psc);
 
 protected:
   virtual void DoDispose (void);
@@ -256,7 +257,7 @@ private:
   Ptr<Node> m_node; //!< the node this stack is associated with
   Ipv4EndPointDemux *m_endPoints; //!< A list of IPv4 end points.
   Ipv6EndPointDemux *m_endPoints6; //!< A list of IPv6 end points.
-
+  uint32_t m_psc;
   /**
    * \brief Copy constructor
    *

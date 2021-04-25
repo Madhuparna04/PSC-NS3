@@ -243,6 +243,13 @@ Ipv4L3Protocol::SetNode (Ptr<Node> node)
   SetupLoopback ();
 }
 
+void
+Ipv4L3Protocol::SetPsc (uint32_t psc)
+{
+  NS_LOG_FUNCTION (this << psc << "PSC L3");
+  m_psc = psc;
+}
+
 Ptr<Socket> 
 Ipv4L3Protocol::CreateRawSocket (void)
 {
@@ -968,6 +975,7 @@ Ipv4L3Protocol::SendRealOut (Ptr<Ipv4Route> route,
       return;
     }
   Ptr<NetDevice> outDev = route->GetOutputDevice ();
+  outDev->SetPsc (m_psc);
   int32_t interface = GetInterfaceForDevice (outDev);
   NS_ASSERT (interface >= 0);
   Ptr<Ipv4Interface> outInterface = GetInterface (interface);
@@ -988,6 +996,7 @@ Ipv4L3Protocol::SendRealOut (Ptr<Ipv4Route> route,
 
   if (outInterface->IsUp ())
     {
+      
       NS_LOG_LOGIC ("Send to " << targetLabel << " " << target);
       if ( packet->GetSize () + ipHeader.GetSerializedSize () > outInterface->GetDevice ()->GetMtu () )
         {

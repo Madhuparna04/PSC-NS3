@@ -83,6 +83,18 @@ LteNetDevice::DoDispose (void)
   NetDevice::DoDispose ();
 }
 
+void
+LteNetDevice::SetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION (this << psc);
+  m_psc = psc;
+  return;
+}
+
+uint32_t
+LteNetDevice::GetPsc (void) {
+  NS_LOG_FUNCTION (this << m_psc);
+  return m_psc;
+}
 
 Ptr<Channel>
 LteNetDevice::GetChannel (void) const
@@ -113,6 +125,7 @@ LteNetDevice::SetNode (Ptr<Node> node)
 {
   NS_LOG_FUNCTION (this << node);
   m_node = node;
+  
 }
 
 

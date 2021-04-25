@@ -62,6 +62,8 @@ public:
   // inherited from NetDevice
   virtual void SetIfIndex (const uint32_t index);
   virtual uint32_t GetIfIndex (void) const;
+  virtual void SetPsc (uint32_t psc);
+  virtual uint32_t GetPsc();
   virtual Ptr<Channel> GetChannel (void) const;
   virtual bool SetMtu (const uint16_t mtu);
   virtual uint16_t GetMtu (void) const;
@@ -109,8 +111,9 @@ private:
   TracedCallback<> m_linkChangeCallbacks; ///< link change callback
 
   uint32_t m_ifIndex; ///< interface index
-  bool m_linkUp; ///< link uo
+  bool m_linkUp; ///< link up
   mutable uint16_t m_mtu; ///< MTU
+  uint32_t m_psc;
 
   Mac64Address m_address; ///< MAC address - only relevant for UEs.
 };

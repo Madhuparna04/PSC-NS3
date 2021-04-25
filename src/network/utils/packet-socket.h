@@ -137,6 +137,7 @@ public:
   virtual int Bind (const Address & address);
   virtual int Close (void);
   virtual int ShutdownSend (void);
+  virtual void SetPsc (uint32_t psc);
   virtual int ShutdownRecv (void);
   virtual int Connect (const Address &address);
   virtual int Listen (void);

@@ -127,6 +127,12 @@ Ipv4Interface::DoSetup (void)
   m_cache = arp->CreateCache (m_device, this);
 }
 
+void
+Ipv4Interface::SetPsc (uint32_t psc) {
+  return;
+}
+
+
 Ptr<NetDevice>
 Ipv4Interface::GetDevice (void) const
 {
@@ -225,9 +231,12 @@ Ipv4Interface::Send (Ptr<Packet> p, const Ipv4Header & hdr, Ipv4Address dest)
       /// \todo additional checks needed here (such as whether multicast
       /// goes to loopback)?
       p->AddHeader (hdr);
+      NS_LOG_INFO ("M_DEVICE SEND CALLED HERE");
       m_device->Send (p, m_device->GetBroadcast (), Ipv4L3Protocol::PROT_NUMBER);
       return;
     } 
+
+      NS_LOG_INFO ("Traffic control layer");
 
   NS_ASSERT (m_tc != 0);
 

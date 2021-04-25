@@ -134,6 +134,11 @@ int Ipv6RawSocketImpl::GetSockName (Address& address) const
   return 0;
 }
 
+void Ipv6RawSocketImpl::SetPsc (uint32_t psc)
+{
+  return;
+}
+
 int
 Ipv6RawSocketImpl::GetPeerName (Address& address) const
 {

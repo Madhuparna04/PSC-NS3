@@ -495,6 +495,12 @@ TcpSocketBase::GetNode (void) const
   return m_node;
 }
 
+void
+TcpSocketBase::SetPsc (uint32_t psc)
+{
+  return;
+}
+
 /* Inherit from Socket class: Bind socket to an end-point in TcpL4Protocol */
 int
 TcpSocketBase::Bind (void)

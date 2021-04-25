@@ -161,14 +161,21 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteUePhy", logLevel);
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
-    LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
+    //LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
       //  LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
        // LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
       //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
          //   LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
-//LogComponentEnable ("UdpL4Protocol", LOG_LEVEL_ALL);
+LogComponentEnable ("UdpL4Protocol", LOG_LEVEL_ALL);
 LogComponentEnable ("UdpSocketImpl", LOG_LEVEL_ALL);
+//LogComponentEnable ("Ipv4L3Protocol", LOG_LEVEL_ALL);
+LogComponentEnable ("OnOffApplication", LOG_LEVEL_ALL);
+//LogComponentEnable ("LteNetDevice", LOG_LEVEL_ALL);
+//LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
+LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
+
+
 
 
   //Set the UEs power in dBm
@@ -351,7 +358,7 @@ LogComponentEnable ("UdpSocketImpl", LOG_LEVEL_ALL);
 
   //Set Application in the UEs
   OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
-  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 0);
+  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
   ApplicationContainer clientApps[num_d2d];
 

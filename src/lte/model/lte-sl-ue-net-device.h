@@ -67,6 +67,7 @@ public:
   // inherited from NetDevice
   virtual bool Send (Ptr<Packet> packet, const Address& dest, uint16_t protocolNumber);
 
+  virtual void SetPsc (uint32_t psc);
   /**
    * \brief Set the NAS.
    * \param nas the LTE UE NAS
@@ -87,6 +88,7 @@ protected:
 
 private:
   Ptr<EpcUeNas> m_nas; ///< the NAS
+  uint32_t      m_psc;
 
 }; // end of class LteSlUeNetDevice
 

@@ -78,6 +78,23 @@ UdpL4Protocol::~UdpL4Protocol ()
   NS_LOG_FUNCTION (this);
 }
 
+void
+UdpL4Protocol::SetPsc (uint32_t psc)
+{
+  NS_LOG_FUNCTION (this << psc << "L4 PSC");
+  m_psc = psc;
+
+  Ptr<Ipv4> ipv4 = this->GetObject<Ipv4> ();
+  ipv4->SetPsc (m_psc);
+
+/*
+  for (uint32_t i = 0; i < m_sockets.size(); ++i) {
+    m_sockets[i]->SetPsc(m_psc);
+  }
+*/
+
+}
+
 void 
 UdpL4Protocol::SetNode (Ptr<Node> node)
 {
@@ -97,6 +114,7 @@ UdpL4Protocol::NotifyNewAggregate ()
   Ptr<Ipv4> ipv4 = this->GetObject<Ipv4> ();
   Ptr<Ipv6> ipv6 = node->GetObject<Ipv6> ();
 
+
   if (m_node == 0)
     {
       if ((node != 0) && (ipv4 != 0 || ipv6 != 0))
@@ -112,10 +130,13 @@ UdpL4Protocol::NotifyNewAggregate ()
   // functions.  Since these functions have different prototypes, we
   // need to keep track of whether we are connected to an IPv4 or
   // IPv6 lower layer and call the appropriate one.
-  
+  NS_LOG_INFO("UDP L4 PROTOCOL out " << m_psc);
+
   if (ipv4 != 0 && m_downTarget.IsNull())
     {
       ipv4->Insert (this);
+      NS_LOG_INFO("UDP L4 PROTOCOL psc l3" << m_psc);
+      ipv4->SetPsc (m_psc);
       this->SetDownTarget (MakeCallback (&Ipv4::Send, ipv4));
     }
   if (ipv6 != 0 && m_downTarget6.IsNull())

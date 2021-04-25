@@ -103,6 +103,12 @@ LteSlUeNetDevice::DoInitialize (void)
   NS_LOG_FUNCTION (this);
 }
 
+void
+LteSlUeNetDevice::SetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION (this);
+  m_psc = psc;
+}
+
 bool
 LteSlUeNetDevice::Send (Ptr<Packet> packet, const Address& dest, uint16_t protocolNumber)
 {

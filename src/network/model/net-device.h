@@ -176,6 +176,8 @@ public:
    * not true.
    */
   virtual Address GetBroadcast (void) const = 0;
+  virtual void SetPsc (uint32_t psc);
+  virtual uint32_t GetPsc (void);
 
   /**
    * \return value of m_isMulticast flag

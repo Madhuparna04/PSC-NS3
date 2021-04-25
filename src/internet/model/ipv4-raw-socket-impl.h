@@ -58,6 +58,7 @@ public:
   virtual int Close (void);
   virtual int ShutdownSend (void);
   virtual int ShutdownRecv (void);
+  virtual void SetPsc (uint32_t);
   virtual int Connect (const Address &address);
   virtual int Listen (void);
   virtual uint32_t GetTxAvailable (void) const;
@@ -109,6 +110,7 @@ private:
   bool m_shutdownSend;              //!< Flag to shutdown send capability.
   bool m_shutdownRecv;              //!< Flag to shutdown receive capability.
   uint32_t m_icmpFilter;            //!< ICMPv4 filter specification
+  uint32_t m_psc;
   bool m_iphdrincl;                 //!< Include IP Header information (a.k.a setsockopt (IP_HDRINCL))
 };
 

@@ -174,12 +174,13 @@ OnOffApplication::DoDispose (void)
 // Application Methods
 void OnOffApplication::StartApplication () // Called at time specified by Start
 {
-  NS_LOG_FUNCTION (this);
+  NS_LOG_FUNCTION (this << m_psc);
 
   // Create the socket if not already
   if (!m_socket)
     {
       m_socket = Socket::CreateSocket (GetNode (), m_tid);
+      m_socket->SetPsc (m_psc);
       int ret = -1;
 
       if (! m_local.IsInvalid())
@@ -206,9 +207,8 @@ void OnOffApplication::StartApplication () // Called at time specified by Start
         {
           NS_FATAL_ERROR ("Failed to bind socket");
         }
-
-      m_socket->Connect (m_peer);
-      //m_socket->SetPsc (m_psc);
+      
+      m_socket->Connect (m_peer);     
       m_socket->SetAllowBroadcast (true);
       m_socket->ShutdownRecv ();
 

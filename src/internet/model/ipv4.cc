@@ -68,4 +68,10 @@ Ipv4::~Ipv4 ()
   NS_LOG_FUNCTION (this);
 }
 
+void
+Ipv4::SetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION (this);
+  ;
+}
+
 } // namespace ns3

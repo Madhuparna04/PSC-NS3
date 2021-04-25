@@ -118,6 +118,14 @@ Ipv4RawSocketImpl::Bind (void)
   m_src = Ipv4Address::GetAny ();
   return 0;
 }
+
+void
+Ipv4RawSocketImpl::SetPsc (uint32_t psc)
+{
+  NS_LOG_FUNCTION (this);
+  m_psc = psc;
+}
+
 int 
 Ipv4RawSocketImpl::Bind6 (void)
 {

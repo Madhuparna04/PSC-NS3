@@ -191,6 +191,11 @@ Socket::Recv (uint8_t* buf, uint32_t size, uint32_t flags)
   return p->GetSize ();
 }
 
+void
+Socket::SetPsc (uint32_t psc) {
+  return;
+}
+
 Ptr<Packet>
 Socket::RecvFrom (Address &fromAddress)
 {
