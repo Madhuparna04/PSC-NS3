@@ -90,6 +90,7 @@ public:
    * \param udp the UDP L4 protocol
    */
   void SetUdp (Ptr<UdpL4Protocol> udp);
+  void SetPsc (uint32_t psc);
 
   virtual enum SocketErrno GetErrno (void) const;
   virtual enum SocketType GetSocketType (void) const;
@@ -130,7 +131,7 @@ private:
   virtual bool GetIpMulticastLoop (void) const;
   virtual void SetMtuDiscover (bool discover);
   virtual bool GetMtuDiscover (void) const;
-
+  uint32_t m_psc;
 
   /**
    * \brief UdpSocketFactory friend class.

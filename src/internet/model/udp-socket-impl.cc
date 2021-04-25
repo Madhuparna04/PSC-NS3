@@ -1202,6 +1202,12 @@ UdpSocketImpl::SetAllowBroadcast (bool allowBroadcast)
   return true;
 }
 
+void
+UdpSocketImpl::SetPsc (uint32_t psc)
+{
+  m_psc = psc;
+}
+
 bool
 UdpSocketImpl::GetAllowBroadcast () const
 {

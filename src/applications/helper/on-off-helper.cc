@@ -97,12 +97,13 @@ OnOffHelper::AssignStreams (NodeContainer c, int64_t stream)
 }
 
 void 
-OnOffHelper::SetConstantRate (DataRate dataRate, uint32_t packetSize)
+OnOffHelper::SetConstantRate (DataRate dataRate, uint32_t packetSize, uint32_t psc)
 {
   m_factory.Set ("OnTime", StringValue ("ns3::ConstantRandomVariable[Constant=1000]"));
   m_factory.Set ("OffTime", StringValue ("ns3::ConstantRandomVariable[Constant=0]"));
   m_factory.Set ("DataRate", DataRateValue (dataRate));
   m_factory.Set ("PacketSize", UintegerValue (packetSize));
+  m_factory.Set ("PSC", UintegerValue(psc));
 }
 
 } // namespace ns3

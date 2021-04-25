@@ -164,6 +164,7 @@ private:
   Address         m_peer;         //!< Peer address
   Address         m_local;        //!< Local address to bind to
   bool            m_connected;    //!< True if connected
+  uint32_t        m_psc;
   Ptr<RandomVariableStream>  m_onTime;       //!< rng for On Time
   Ptr<RandomVariableStream>  m_offTime;      //!< rng for Off Time
   DataRate        m_cbrRate;      //!< Rate that data is generated

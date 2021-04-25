@@ -111,6 +111,10 @@ OnOffApplication::GetTypeId (void)
     .AddTraceSource ("TxWithSeqTsSize", "A new packet is created with SeqTsSizeHeader",
                      MakeTraceSourceAccessor (&OnOffApplication::m_txTraceWithSeqTsSize),
                      "ns3::PacketSink::SeqTsSizeCallback")
+    .AddAttribute ("PSC", "Public Safety Communication Application or not",
+                   UintegerValue (0),
+                   MakeUintegerAccessor (&OnOffApplication::m_psc),
+                   MakeUintegerChecker <uint32_t> ())
   ;
   return tid;
 }
@@ -204,6 +208,7 @@ void OnOffApplication::StartApplication () // Called at time specified by Start
         }
 
       m_socket->Connect (m_peer);
+      //m_socket->SetPsc (m_psc);
       m_socket->SetAllowBroadcast (true);
       m_socket->ShutdownRecv ();
 

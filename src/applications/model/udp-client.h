@@ -79,6 +79,7 @@ private:
   void Send (void);
 
   uint32_t m_count; //!< Maximum number of packets the application will send
+  uint32_t m_psc;
   Time m_interval; //!< Packet inter-send time
   uint32_t m_size; //!< Size of the sent packet (including the SeqTsHeader)
 

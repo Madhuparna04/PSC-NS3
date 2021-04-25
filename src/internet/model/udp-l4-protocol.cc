@@ -39,6 +39,8 @@
 #include "ipv4-l3-protocol.h"
 #include "ipv6-l3-protocol.h"
 #include "udp-socket-impl.h"
+#include "ns3/uinteger.h"
+
 
 namespace ns3 {
 
@@ -60,6 +62,7 @@ UdpL4Protocol::GetTypeId (void)
                    ObjectVectorValue (),
                    MakeObjectVectorAccessor (&UdpL4Protocol::m_sockets),
                    MakeObjectVectorChecker<UdpSocketImpl> ())
+
   ;
   return tid;
 }

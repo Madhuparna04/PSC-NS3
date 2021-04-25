@@ -70,8 +70,8 @@ public:
    * \param dataRate DataRate object for the sending rate
    * \param packetSize size in bytes of the packet payloads generated
    */
-  void SetConstantRate (DataRate dataRate, uint32_t packetSize = 512);
-
+  void SetConstantRate (DataRate dataRate, uint32_t packetSize = 512, uint32_t psc = 0);
+ 
   /**
    * Install an ns3::OnOffApplication on each node of the input container
    * configured with all the attributes set with SetAttribute.

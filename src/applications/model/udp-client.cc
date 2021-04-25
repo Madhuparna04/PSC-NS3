@@ -55,6 +55,10 @@ UdpClient::GetTypeId (void)
                    "The time to wait between packets", TimeValue (Seconds (1.0)),
                    MakeTimeAccessor (&UdpClient::m_interval),
                    MakeTimeChecker ())
+    .AddAttribute ("PSC", "Public Safety Communication Application or not",
+                   UintegerValue (0),
+                   MakeUintegerAccessor (&UdpClient::m_psc),
+                   MakeUintegerChecker <uint32_t> ())
     .AddAttribute ("RemoteAddress",
                    "The destination Address of the outbound packets",
                    AddressValue (),
