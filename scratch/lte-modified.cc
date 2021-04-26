@@ -175,6 +175,7 @@ int main (int argc, char *argv[])
 //LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
 LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
 LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
+LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
 
 
 
@@ -370,6 +371,7 @@ LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
+  
     OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
@@ -378,6 +380,7 @@ LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
+  
   //onoff application will send the first packet at :
   //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
 

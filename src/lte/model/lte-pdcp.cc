@@ -192,6 +192,11 @@ LtePdcp::SetStatus (Status s)
 ////////////////////////////////////////
 
 void
+LtePdcp::DoSetPsc (uint32_t psc) {
+   NS_LOG_FUNCTION (this << psc);
+}
+
+void
 LtePdcp::DoTransmitPdcpSdu (LtePdcpSapProvider::TransmitPdcpSduParameters params)
 {
   NS_LOG_FUNCTION (this << m_rnti << (uint32_t) m_lcid << params.pdcpSdu->GetSize ());

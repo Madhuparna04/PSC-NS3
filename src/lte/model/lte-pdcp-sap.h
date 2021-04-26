@@ -58,6 +58,7 @@ public:
    *
    * \param params
    */
+  virtual void SetPsc (uint32_t psc);
   virtual void TransmitPdcpSdu (TransmitPdcpSduParameters params) = 0;
 };
 
@@ -120,6 +121,7 @@ public:
   LtePdcpSpecificLtePdcpSapProvider (C* pdcp);
 
   // Interface implemented from LtePdcpSapProvider
+  virtual void SetPsc (uint32_t psc);
   virtual void TransmitPdcpSdu (TransmitPdcpSduParameters params);
 
 private:
@@ -144,6 +146,11 @@ void LtePdcpSpecificLtePdcpSapProvider<C>::TransmitPdcpSdu (TransmitPdcpSduParam
   m_pdcp->DoTransmitPdcpSdu (params);
 }
 
+template <class C>
+void LtePdcpSpecificLtePdcpSapProvider<C>::SetPsc (uint32_t psc)
+{
+  m_pdcp->DoSetPsc (psc);
+}
 
 /// LtePdcpSpecificLtePdcpSapUser class
 template <class C>

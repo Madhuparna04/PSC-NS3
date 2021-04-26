@@ -698,7 +698,7 @@ LteUeRrc::DoSendData (Ptr<Packet> packet, uint8_t bid)
 void
 LteUeRrc::DoSendDataToGroup (Ptr<Packet> packet, uint32_t group)
 {
-  NS_LOG_FUNCTION (this << packet << "for Sidelink group " << group);
+  NS_LOG_FUNCTION (this << packet << "for Sidelink group " << group << m_psc);
   //Find the PDCP for Sidelink transmission
   Ptr<LteSidelinkRadioBearerInfo> slrb = m_sidelinkConfiguration->GetSidelinkRadioBearer (group);
   //the NAS should be aware about the existence of the bearer or not
@@ -716,6 +716,8 @@ LteUeRrc::DoSendDataToGroup (Ptr<Packet> packet, uint32_t group)
                      << " on SLRBBID " << (uint32_t) group
                      << " (LCID " << (uint32_t) params.lcid << ")"
                      << " (" << packet->GetSize () << " bytes)");
+
+  slrb->m_pdcp->GetLtePdcpSapProvider ()->SetPsc (m_psc);
   slrb->m_pdcp->GetLtePdcpSapProvider ()->TransmitPdcpSdu (params);
 }
 

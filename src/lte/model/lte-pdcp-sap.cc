@@ -26,6 +26,13 @@ LtePdcpSapProvider::~LtePdcpSapProvider ()
 {
 }
 
+void
+LtePdcpSapProvider::SetPsc (uint32_t psc)
+{
+    std::cout<<"Called here"<<std::endl;
+    ;
+}
+
 LtePdcpSapUser::~LtePdcpSapUser ()
 {
 }

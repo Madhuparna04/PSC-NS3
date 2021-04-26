@@ -161,6 +161,8 @@ protected:
    * \param params the TransmitPdcpSduParameters
    */
   virtual void DoTransmitPdcpSdu (LtePdcpSapProvider::TransmitPdcpSduParameters params);
+  virtual void DoSetPsc (uint32_t psc);
+
 
   LtePdcpSapUser* m_pdcpSapUser; ///< PDCP SAP user
   LtePdcpSapProvider* m_pdcpSapProvider; ///< PDCP SAP provider
