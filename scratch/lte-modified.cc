@@ -56,6 +56,7 @@ int main (int argc, char *argv[])
   bool useIPv6 = false;
   uint32_t grantSize = 10;
   uint32_t ulBandwidth = 100;
+  //Set number of PSC nodes out of total d2d clients
   int num_psc = 5;
   uint32_t max_ues = ulBandwidth / grantSize;
 
@@ -70,6 +71,7 @@ int main (int argc, char *argv[])
   Config::SetDefault ("ns3::PscSlFfMacScheduler::Itrp", UintegerValue (0));
   //The number of RBs allocated per UE for Sidelink
   Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (grantSize));
+  //Set Importance given to PSC over Commercial
   Config::SetDefault ("ns3::PscSlFfMacScheduler::PscImp", UintegerValue (2));
 
 
@@ -101,6 +103,7 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteUePhy", logLevel);
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
+    //Enable logs from PSC Scheduler
     LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_INFO);
 
   //Set the UEs power in dBm
@@ -145,12 +148,6 @@ int main (int argc, char *argv[])
     //Position of the nodes
   Ptr<ListPositionAllocator> positionAllocEnb = CreateObject<ListPositionAllocator> ();
   positionAllocEnb->Add (Vector (0.0, 0.0, 30.0));
-/*
-  Ptr<ListPositionAllocator> positionAllocUe1 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe1->Add (Vector (10.0, 0.0, 1.5));
-  Ptr<ListPositionAllocator> positionAllocUe2 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe2->Add (Vector (-10.0, 0.0, 1.5));
-*/
 
   //Install mobility
   MobilityHelper mobilityeNodeB;
@@ -158,29 +155,17 @@ int main (int argc, char *argv[])
   mobilityeNodeB.SetPositionAllocator (positionAllocEnb);
   mobilityeNodeB.Install (enbNode);
 
-    double pos_start = -10;
-    double pos_interval = 20;
+  double pos_start = -10;
+  double pos_interval = 20;
 
-    for (uint32_t i = 0 ; i < ueNodes.GetN() ; i++) {
-        MobilityHelper mobilityUe;
-        Ptr<ListPositionAllocator> positionAllocUe = CreateObject<ListPositionAllocator> ();
-        positionAllocUe->Add (Vector (pos_start + i * pos_interval, 0.0, 1.5));
-        mobilityUe.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-        mobilityUe.SetPositionAllocator (positionAllocUe);
-        mobilityUe.Install (ueNodes.Get (i));
-    }
-
-/*
-  MobilityHelper mobilityUe1;
-  mobilityUe1.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe1.SetPositionAllocator (positionAllocUe1);
-  mobilityUe1.Install (ueNodes.Get (0));
-
-  MobilityHelper mobilityUe2;
-  mobilityUe2.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe2.SetPositionAllocator (positionAllocUe2);
-  mobilityUe2.Install (ueNodes.Get (1));
-*/
+  for (uint32_t i = 0 ; i < ueNodes.GetN() ; i++) {
+      MobilityHelper mobilityUe;
+      Ptr<ListPositionAllocator> positionAllocUe = CreateObject<ListPositionAllocator> ();
+      positionAllocUe->Add (Vector (pos_start + i * pos_interval, 0.0, 1.5));
+      mobilityUe.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+      mobilityUe.SetPositionAllocator (positionAllocUe);
+      mobilityUe.Install (ueNodes.Get (i));
+  }
 
   //Install LTE devices to the nodes and fix the random number stream
   int64_t randomStream = 1;
@@ -282,6 +267,7 @@ int main (int argc, char *argv[])
   ///*** Configure applications ***///
 
   //Set Application in the UEs
+  //Create Commercial Application Clients
   OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 0);
 
@@ -293,7 +279,8 @@ int main (int argc, char *argv[])
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
   
-    OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
+  //Create PSC Application Clients
+  OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
     for (int i = num_psc ; i < num_d2d ; ++i) {
@@ -301,25 +288,18 @@ int main (int argc, char *argv[])
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
-  
-  //onoff application will send the first packet at :
-  //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
 
-    ApplicationContainer serverApps [num_d2d];
-    PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
+  // Create Servers
+  ApplicationContainer serverApps [num_d2d];
+  PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
 
   for (int i = 0 ; i < num_d2d ; ++i) {
     serverApps[i] = sidelinkSink.Install (ueNodes.Get (num_d2d + i));
     serverApps[i].Start (Seconds (2.0));
   }
 
-
-
   proseHelper->ActivateSidelinkBearer (slBearersActivationTime, ueDevs, tft);
   ///*** End of application configuration ***///
-
-
-  //Trace file table header
 
   std::ostringstream oss;
 
