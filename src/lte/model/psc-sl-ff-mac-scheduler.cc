@@ -1414,30 +1414,12 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
               
               if (!comm) {
                 if (! psc[ userIt->first ]) {
-                  if (alloc_comm == 0)
-                    continue;
-                  else
-                    alloc_comm --;
-                }
-                else {
-                  if (alloc_psc == 0)
-                    continue;
-                  else
-                    alloc_psc --;
+                  continue;
                 }
               }
               else{
                 if (psc[ userIt->first ]) {
-                  if (alloc_psc == 0)
                     continue;
-                  else
-                    alloc_psc --;
-                }
-                else {
-                    if (alloc_comm == 0)
-                    continue;
-                  else
-                    alloc_comm --;
                 }
               }
               NS_LOG_INFO (this << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));

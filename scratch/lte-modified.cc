@@ -224,7 +224,7 @@ int main (int argc, char *argv[])
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  const int num_d2d = 11;
+  const int num_d2d = 10;
   ueNodes.Create (num_d2d * 2);
   for (uint32_t i= 0 ; i< ueNodes.GetN () ; i++) {
       NS_LOG_INFO ("UE " << i+1 << " node id = [" << ueNodes.Get (i)->GetId () << "]");
