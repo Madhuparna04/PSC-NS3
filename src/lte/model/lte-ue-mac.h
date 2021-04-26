@@ -172,7 +172,9 @@ private:
    *
    * \param params LteMacSapProvider::TransmitPduParameters
    */
+  void DoSetPsc (uint32_t psc);
   void DoTransmitPdu (LteMacSapProvider::TransmitPduParameters params);
+  uint32_t m_psc;
   /**
    * Report buffers status function
    *

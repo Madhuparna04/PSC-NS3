@@ -233,9 +233,10 @@ public:
   UeMemberLteMacSapProvider (LteUeMac* mac);
 
   // inherited from LteMacSapProvider
+  virtual void SetPsc (uint32_t psc);
   virtual void TransmitPdu (TransmitPduParameters params);
   virtual void ReportBufferStatus (ReportBufferStatusParameters params);
-
+  uint32_t m_psc;
 private:
   LteUeMac* m_mac; ///< the UE MAC
 };
@@ -249,7 +250,17 @@ UeMemberLteMacSapProvider::UeMemberLteMacSapProvider (LteUeMac* mac)
 void
 UeMemberLteMacSapProvider::TransmitPdu (TransmitPduParameters params)
 {
+    std::cout<< "Transmit pdu psc " << m_psc <<std::endl;
+
   m_mac->DoTransmitPdu (params);
+  m_mac->DoSetPsc (params.isPsc);
+}
+
+void
+UeMemberLteMacSapProvider::SetPsc (uint32_t psc)
+{
+  std::cout<< "Ue Member psc " << psc <<std::endl;
+  m_mac->DoSetPsc (psc);
 }
 
 
@@ -514,6 +525,12 @@ LteUeMac::SetComponentCarrierId (uint8_t index)
 }
 
 void
+LteUeMac::DoSetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION (this << psc);
+  m_psc = psc;
+}
+
+void
 LteUeMac::DoTransmitPdu (LteMacSapProvider::TransmitPduParameters params)
 {
   NS_LOG_FUNCTION (this);
@@ -734,8 +751,9 @@ LteUeMac::SendSidelinkReportBufferStatus (void)
 
   MacCeListElement_s bsr;
   bsr.m_rnti = m_rnti;
-
-
+  bsr.is_psc = m_psc;
+  NS_LOG_INFO ("BSR PSC " << bsr.is_psc);
+/*
   if( m_rnti%2 == 0) {
     bsr.is_psc = false;
 NS_LOG_INFO ("Even");
@@ -745,6 +763,7 @@ NS_LOG_INFO ("Even");
 NS_LOG_INFO ("Odd");
 
   }
+  */
   
   bsr.m_macCeType = MacCeListElement_s::SLBSR;
 

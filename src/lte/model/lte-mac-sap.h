@@ -55,6 +55,7 @@ public:
     uint32_t dstL2Id;  /**< Destination L2 ID (24 bits) */
     bool        discMsg; /**< indicates if this a discovery message coming from RRC instead of RLC */
     bool        mibslMsg; /**< indicates if this is a MIB-SL message coming from RRC instead of RLC */
+    uint32_t    isPsc;
   };
 
   /**
@@ -63,6 +64,8 @@ public:
    *
    * \param params TransmitPduParameters
    */
+  virtual void SetPsc (uint32_t psc);
+  uint32_t m_psc;
   virtual void TransmitPdu (TransmitPduParameters params) = 0;
 
 

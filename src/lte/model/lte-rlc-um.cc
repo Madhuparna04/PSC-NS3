@@ -413,6 +413,10 @@ LteRlcUm::DoNotifyTxOpportunity (LteMacSapUser::TxOpportunityParameters txOpPara
   params.componentCarrierId = txOpParams.componentCarrierId;
   params.discMsg = false;
   params.mibslMsg = false;
+  params.isPsc = m_psc;
+  //m_macSapProvider->SetPsc (m_psc);
+
+  m_macSapProvider->m_psc = m_psc;
   m_macSapProvider->TransmitPdu (params);
 
   if (!m_txBuffer.empty ())

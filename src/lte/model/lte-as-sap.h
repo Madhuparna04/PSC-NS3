@@ -93,7 +93,7 @@ public:
    */
   virtual void SendDataToGroup (Ptr<Packet> packet, uint32_t group) = 0;
   virtual void SetPsc (uint32_t psc);
-  uint32_t m_psc;
+  //uint32_t m_psc;
 
   /** 
    * \brief Tell the RRC entity to release the connection.

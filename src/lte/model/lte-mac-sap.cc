@@ -29,6 +29,12 @@ LteMacSapProvider::~LteMacSapProvider ()
 {
 }
 
+void
+LteMacSapProvider::SetPsc (uint32_t psc)
+{
+    std::cout<< "MAC SAP " << psc << std::endl;
+}
+
 LteMacSapUser::~LteMacSapUser ()
 {
 }

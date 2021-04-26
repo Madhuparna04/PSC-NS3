@@ -29,7 +29,8 @@ LteAsSapProvider::~LteAsSapProvider ()
 void
 LteAsSapProvider::SetPsc (uint32_t psc)
 {
-    m_psc = psc;
+    //m_psc = psc;
+    ;
 }
 
 LteAsSapUser::~LteAsSapUser ()

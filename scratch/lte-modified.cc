@@ -161,7 +161,7 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteUePhy", logLevel);
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
-    //LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
+    LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
       //  LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
        // LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
       //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
@@ -175,12 +175,10 @@ int main (int argc, char *argv[])
 //LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
 //LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
 //LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
-LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
-LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
-LogComponentEnable ("LteRlc", LOG_LEVEL_ALL);
-LogComponentEnable ("LteRlcAm", LOG_LEVEL_ALL);
-LogComponentEnable ("LteRlcUm", LOG_LEVEL_ALL);
-LogComponentEnable ("LteRlcTm", LOG_LEVEL_ALL);
+//LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
+//LogComponentEnable ("LteRlc", LOG_LEVEL_ALL);
+//LogComponentEnable ("LteRlcUm", LOG_LEVEL_ALL);
+LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
 
 
@@ -370,7 +368,7 @@ LogComponentEnable ("LteRlcTm", LOG_LEVEL_ALL);
 
   ApplicationContainer clientApps[num_d2d];
 
-  for (int i = 0 ; i < num_d2d/2 ; ++i) {
+  for (int i = 0 ; i < 3 ; ++i) {
     clientApps[i] =  sidelinkClient.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
@@ -379,7 +377,7 @@ LogComponentEnable ("LteRlcTm", LOG_LEVEL_ALL);
     OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
-    for (int i = num_d2d/2 ; i < num_d2d ; ++i) {
+    for (int i = 3 ; i < num_d2d ; ++i) {
     clientApps[i] =  sidelinkClientPsc.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
