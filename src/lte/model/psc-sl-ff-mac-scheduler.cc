@@ -128,6 +128,17 @@ PscSlFfMacScheduler::GetTypeId (void)
                    UintegerValue (1),
                    MakeUintegerAccessor (&PscSlFfMacScheduler::m_slGrantSize),
                    MakeUintegerChecker<uint8_t> ())
+    .AddAttribute ("PscImp",
+                   "Importance given to PSC Applications",
+                   UintegerValue (2),
+                   MakeUintegerAccessor (&PscSlFfMacScheduler::psc_imp),
+                   MakeUintegerChecker<uint8_t> ())
+    .AddAttribute ("MaxUEs",
+                   "Maximum number of UEs in one subframe",
+                   UintegerValue (0),
+                   MakeUintegerAccessor (&PscSlFfMacScheduler::max_ues),
+                   MakeUintegerChecker<uint8_t> ())
+    
   ;
   return tid;
 }
@@ -321,7 +332,6 @@ PscSlFfMacScheduler::DoCschedPoolConfigReq (const struct  FfMacCschedSapProvider
 
   std::map <uint32_t, PoolInfo>::iterator it = m_poolAllocations.find (params.m_group);
   NS_ASSERT_MSG (it == m_poolAllocations.end (), "Cannot add existing pool");
-  NS_LOG_INFO("Pool m_group :" << params.m_group);
   m_poolAllocations.insert (std::pair <uint32_t, PoolInfo> (params.m_group, info));
 }
 
@@ -1362,25 +1372,73 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
         }
 
       //check PSSCH allocation for each user in the pool
-      
+      uint32_t psc_app = 0;
+      uint32_t comm_app = 0;
+      for (std::map <uint16_t, PoolUserAllocation>::iterator userIt = poolIt->second.m_currentAllocation.begin (); userIt != poolIt->second.m_currentAllocation.end (); userIt++)
+      {
+        NS_LOG_INFO ("USER IS " << userIt->first);
+          if (psc[userIt->first])
+              psc_app ++;
+          else
+              comm_app ++;
+      }
+
+
       int ran = rand();
       bool comm = false;
+      //uint32_t num_ues= 0;
+      uint32_t left = max_ues;
+
       if (ran%psc_imp == 0)
         comm = true;
+
+      uint32_t alloc_comm = 0;
+      uint32_t alloc_psc = 0;
+
+      if (comm) {
+          alloc_comm = std::min (comm_app, left);
+          left = left - alloc_comm;
+          alloc_psc = std::min (psc_app, left);
+      }
+      else {
+          alloc_psc = std::min (psc_app, left);
+          left = left - alloc_psc;
+          alloc_comm = std::min (comm_app, left);
+      }
+      NS_LOG_INFO ("NUM APPS " << alloc_comm << " " << alloc_psc << " " << max_ues << " " << psc_app << " " << comm_app);
       for (std::map <uint16_t, PoolUserAllocation>::iterator userIt = poolIt->second.m_currentAllocation.begin (); userIt != poolIt->second.m_currentAllocation.end (); userIt++)
         {
-          //check if this user is transmitting in this subframe
           std::list<SidelinkCommResourcePool::SidelinkTransmissionInfo>::iterator allocIt = userIt->second.m_psschTx.begin ();
           if (allocIt != userIt->second.m_psschTx.end () && (*allocIt).subframe.frameNo == frameNo && (*allocIt).subframe.subframeNo == subframeNo)
             {
               
               if (!comm) {
-                if (! psc[ userIt->first ])
-                  continue;
+                if (! psc[ userIt->first ]) {
+                  if (alloc_comm == 0)
+                    continue;
+                  else
+                    alloc_comm --;
+                }
+                else {
+                  if (alloc_psc == 0)
+                    continue;
+                  else
+                    alloc_psc --;
+                }
               }
               else{
-                if (psc[ userIt->first ])
-                  continue;
+                if (psc[ userIt->first ]) {
+                  if (alloc_psc == 0)
+                    continue;
+                  else
+                    alloc_psc --;
+                }
+                else {
+                    if (alloc_comm == 0)
+                    continue;
+                  else
+                    alloc_comm --;
+                }
               }
               NS_LOG_INFO (this << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
               

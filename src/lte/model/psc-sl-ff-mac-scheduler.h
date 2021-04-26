@@ -123,6 +123,7 @@ private:
 
 //uint32_t last_done = 0;
 uint32_t psc_imp = 2;
+uint32_t max_ues = 0;
 std::map<uint16_t, bool> psc;
 
   /**

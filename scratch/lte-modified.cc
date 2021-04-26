@@ -121,6 +121,10 @@ int main (int argc, char *argv[])
   Time simTime = Seconds (6);
   bool enableNsLogs = false;
   bool useIPv6 = false;
+  uint32_t grantSize = 10;
+  uint32_t ulBandwidth = 100;
+  int num_psc = 5;
+  uint32_t max_ues = ulBandwidth / grantSize;
 
   CommandLine cmd;
   cmd.AddValue ("simTime", "Total duration of the simulation", simTime);
@@ -129,9 +133,12 @@ int main (int argc, char *argv[])
   cmd.Parse (argc, argv); 
 
   // Configure the scheduler
+  Config::SetDefault ("ns3::PscSlFfMacScheduler::MaxUEs", UintegerValue (max_ues));
   Config::SetDefault ("ns3::PscSlFfMacScheduler::Itrp", UintegerValue (0));
   //The number of RBs allocated per UE for Sidelink
-  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (10));
+  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (grantSize));
+  Config::SetDefault ("ns3::PscSlFfMacScheduler::PscImp", UintegerValue (2));
+
 
   //Set the frequency
 
@@ -139,7 +146,7 @@ int main (int argc, char *argv[])
   Config::SetDefault ("ns3::LteUeNetDevice::DlEarfcn", UintegerValue (100));
   Config::SetDefault ("ns3::LteEnbNetDevice::UlEarfcn", UintegerValue (18100));
   Config::SetDefault ("ns3::LteEnbNetDevice::DlBandwidth", UintegerValue (50));
-  Config::SetDefault ("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue (100));
+  Config::SetDefault ("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue (ulBandwidth));
 
   // Set error models
   Config::SetDefault ("ns3::LteSpectrumPhy::SlCtrlErrorModelEnabled", BooleanValue (true));
@@ -161,7 +168,7 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteUePhy", logLevel);
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
-    LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_ALL);
+    LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_INFO);
       //  LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
        // LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
       //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
@@ -178,7 +185,7 @@ int main (int argc, char *argv[])
 //LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
 //LogComponentEnable ("LteRlc", LOG_LEVEL_ALL);
 //LogComponentEnable ("LteRlcUm", LOG_LEVEL_ALL);
-LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
+//LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
 
 
@@ -217,7 +224,7 @@ LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  const int num_d2d = 10;
+  const int num_d2d = 11;
   ueNodes.Create (num_d2d * 2);
   for (uint32_t i= 0 ; i< ueNodes.GetN () ; i++) {
       NS_LOG_INFO ("UE " << i+1 << " node id = [" << ueNodes.Get (i)->GetId () << "]");
@@ -368,7 +375,7 @@ LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
   ApplicationContainer clientApps[num_d2d];
 
-  for (int i = 0 ; i < 3 ; ++i) {
+  for (int i = 0 ; i < num_psc ; ++i) {
     clientApps[i] =  sidelinkClient.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
@@ -377,7 +384,7 @@ LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
     OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
-    for (int i = 3 ; i < num_d2d ; ++i) {
+    for (int i = num_psc ; i < num_d2d ; ++i) {
     clientApps[i] =  sidelinkClientPsc.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
