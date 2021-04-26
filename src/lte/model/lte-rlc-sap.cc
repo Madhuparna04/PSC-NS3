@@ -26,6 +26,12 @@ LteRlcSapProvider::~LteRlcSapProvider ()
 {
 }
 
+void
+LteRlcSapProvider::SetPsc (uint32_t psc)
+{
+    ;
+}
+
 LteRlcSapUser::~LteRlcSapUser ()
 {
 }

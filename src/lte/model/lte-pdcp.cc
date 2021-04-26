@@ -194,6 +194,7 @@ LtePdcp::SetStatus (Status s)
 void
 LtePdcp::DoSetPsc (uint32_t psc) {
    NS_LOG_FUNCTION (this << psc);
+   m_psc = psc;
 }
 
 void
@@ -250,6 +251,7 @@ LtePdcp::DoTransmitPdcpSdu (LtePdcpSapProvider::TransmitPdcpSduParameters params
   txparams.dstL2Id = m_dstL2Id;
   txparams.pdcpPdu = p;
 
+  m_rlcSapProvider->SetPsc (m_psc);
   m_rlcSapProvider->TransmitPdcpPdu (txparams);
 }
 

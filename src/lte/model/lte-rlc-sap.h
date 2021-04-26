@@ -56,6 +56,7 @@ public:
    * when upper PDCP entity has a PDCP PDU ready to send
    * \param params the TransmitPdcpPduParameters
    */
+  virtual void SetPsc (uint32_t psc);
   virtual void TransmitPdcpPdu (TransmitPdcpPduParameters params) = 0;
 };
 
@@ -97,6 +98,7 @@ public:
    * Interface implemented from LteRlcSapProvider
    * \param params the TransmitPdcpPduParameters
    */
+  virtual void SetPsc (uint32_t psc);
   virtual void TransmitPdcpPdu (TransmitPdcpPduParameters params);
 
 private:
@@ -119,6 +121,13 @@ template <class C>
 void LteRlcSpecificLteRlcSapProvider<C>::TransmitPdcpPdu (TransmitPdcpPduParameters params)
 {
   m_rlc->DoTransmitPdcpPdu (params.pdcpPdu);
+}
+
+
+template <class C>
+void LteRlcSpecificLteRlcSapProvider<C>::SetPsc (uint32_t psc)
+{
+  m_rlc->DoSetPsc (psc);
 }
 
 

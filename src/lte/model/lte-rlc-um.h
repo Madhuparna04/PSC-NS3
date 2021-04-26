@@ -50,6 +50,7 @@ public:
    *
    * \param p packet
    */
+  virtual void DoSetPsc (uint32_t psc);
   virtual void DoTransmitPdcpPdu (Ptr<Packet> p);
 
   /**
@@ -62,6 +63,7 @@ public:
   virtual void DoReceivePdu (LteMacSapUser::ReceivePduParameters rxPduParams);
 
 private:
+  uint32_t m_psc;
   /// Expire reordering timer
   void ExpireReorderingTimer (void);
   /// Expire RBS timer

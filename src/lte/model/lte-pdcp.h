@@ -188,6 +188,7 @@ protected:
   uint8_t m_lcid; ///< LCID
   uint32_t m_srcL2Id;  ///< Source L2 ID (24 bits)
   uint32_t m_dstL2Id;  ///< Destination L2 ID (24 bits)
+  uint32_t m_psc;
     
   /**
    * Used to inform of a PDU delivery to the RLC SAP provider.

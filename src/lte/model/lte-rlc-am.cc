@@ -148,7 +148,6 @@ LteRlcAm::DoDispose ()
   LteRlc::DoDispose ();
 }
 
-
 /**
  * RLC SAP
  */

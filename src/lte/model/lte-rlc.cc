@@ -173,6 +173,11 @@ LteRlc::GetLteRlcSapProvider ()
 }
 
 void
+LteRlc::DoSetPsc (uint32_t psc) {
+    NS_LOG_FUNCTION (this << psc);
+}
+
+void
 LteRlc::SetLteMacSapProvider (LteMacSapProvider * s)
 {
   NS_LOG_FUNCTION (this << s);

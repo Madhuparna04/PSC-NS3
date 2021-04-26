@@ -173,10 +173,14 @@ int main (int argc, char *argv[])
 //LogComponentEnable ("OnOffApplication", LOG_LEVEL_ALL);
 //LogComponentEnable ("LteNetDevice", LOG_LEVEL_ALL);
 //LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
-LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
-LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
+//LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
+//LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
 LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
-
+LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
+LogComponentEnable ("LteRlc", LOG_LEVEL_ALL);
+LogComponentEnable ("LteRlcAm", LOG_LEVEL_ALL);
+LogComponentEnable ("LteRlcUm", LOG_LEVEL_ALL);
+LogComponentEnable ("LteRlcTm", LOG_LEVEL_ALL);
 
 
 

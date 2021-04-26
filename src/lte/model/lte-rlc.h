@@ -160,7 +160,7 @@ public:
 
   /// \todo MRE What is the sense to duplicate all the interfaces here???
   // NB to avoid the use of multiple inheritance
-  
+  virtual void DoSetPsc (uint32_t psc);
 protected:
   // Interface forwarded by LteRlcSapProvider
   /**
@@ -168,6 +168,7 @@ protected:
    * 
    * \param p packet
    */
+  
   virtual void DoTransmitPdcpPdu (Ptr<Packet> p) = 0;
 
   LteRlcSapUser* m_rlcSapUser; ///< RLC SAP user
@@ -233,7 +234,7 @@ public:
   static TypeId GetTypeId (void);
   virtual void DoInitialize ();
   virtual void DoDispose ();
-
+  //virtual void DoSetPsc(uint32_t psc);
   virtual void DoTransmitPdcpPdu (Ptr<Packet> p);
   virtual void DoNotifyTxOpportunity (LteMacSapUser::TxOpportunityParameters txOpParams);
   virtual void DoNotifyHarqDeliveryFailure ();

@@ -93,6 +93,11 @@ LteRlcUm::DoDispose ()
 /**
  * RLC SAP
  */
+void
+LteRlcUm::DoSetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION (this << psc);
+  m_psc = psc;
+}
 
 void
 LteRlcUm::DoTransmitPdcpPdu (Ptr<Packet> p)
