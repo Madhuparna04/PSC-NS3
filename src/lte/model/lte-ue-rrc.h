@@ -163,7 +163,6 @@ public:
    * \param index the index
    */
   void SetLteUeCphySapProvider (LteUeCphySapProvider * s, uint8_t index);
-
   /**
    *
    *
@@ -614,6 +613,8 @@ private:
    * \param group the group id
    */
   void DoSendDataToGroup (Ptr<Packet> packet, uint32_t group);
+  void DoSetPsc (uint32_t psc);
+  
   // Sidelink communication related code
   /**
    * Send activate sidelink radio bearer function
@@ -970,6 +971,7 @@ private:
    * \returns the DR bid
    */
   uint8_t Bid2Drbid (uint8_t bid);
+  uint32_t m_psc;
   /**
    * Switch the UE RRC to the given state.
    * \param s the destination state

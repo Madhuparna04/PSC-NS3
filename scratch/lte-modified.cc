@@ -167,13 +167,16 @@ int main (int argc, char *argv[])
       //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
          //   LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
 
-LogComponentEnable ("UdpL4Protocol", LOG_LEVEL_ALL);
-LogComponentEnable ("UdpSocketImpl", LOG_LEVEL_ALL);
+//LogComponentEnable ("UdpL4Protocol", LOG_LEVEL_ALL);
+//LogComponentEnable ("UdpSocketImpl", LOG_LEVEL_ALL);
 //LogComponentEnable ("Ipv4L3Protocol", LOG_LEVEL_ALL);
-LogComponentEnable ("OnOffApplication", LOG_LEVEL_ALL);
+//LogComponentEnable ("OnOffApplication", LOG_LEVEL_ALL);
 //LogComponentEnable ("LteNetDevice", LOG_LEVEL_ALL);
 //LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
 LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
+LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
+
+
 
 
 
@@ -358,16 +361,23 @@ LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
 
   //Set Application in the UEs
   OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
-  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 1);
+  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 0);
 
   ApplicationContainer clientApps[num_d2d];
 
-  for (int i = 0 ; i < num_d2d ; ++i) {
+  for (int i = 0 ; i < num_d2d/2 ; ++i) {
     clientApps[i] =  sidelinkClient.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
-  
+    OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
+  sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
+
+    for (int i = num_d2d/2 ; i < num_d2d ; ++i) {
+    clientApps[i] =  sidelinkClientPsc.Install (ueNodes.Get (i));
+    clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
+    clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
+  }
   //onoff application will send the first packet at :
   //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
 

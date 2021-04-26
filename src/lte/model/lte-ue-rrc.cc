@@ -1149,6 +1149,11 @@ LteUeRrc::DoCompleteSetup (LteUeRrcSapProvider::CompleteSetupParameters params)
     }
 }
 
+void
+LteUeRrc::DoSetPsc (uint32_t psc) {
+  NS_LOG_FUNCTION(this << psc);
+  m_psc = psc;
+}
 
 void
 LteUeRrc::DoRecvSystemInformation (LteRrcSap::SystemInformation msg)

@@ -92,7 +92,8 @@ public:
    * \param group The L2 group address
    */
   virtual void SendDataToGroup (Ptr<Packet> packet, uint32_t group) = 0;
-
+  virtual void SetPsc (uint32_t psc);
+  uint32_t m_psc;
 
   /** 
    * \brief Tell the RRC entity to release the connection.
@@ -192,6 +193,7 @@ public:
   virtual void Connect (void);
   virtual void SendData (Ptr<Packet> packet, uint8_t bid);
   virtual void SendDataToGroup (Ptr<Packet> packet, uint32_t group);
+  virtual void SetPsc(uint32_t psc);
   virtual void Disconnect ();
   //communication
   virtual void ActivateSidelinkRadioBearer (uint32_t group, bool tx, bool rx);
@@ -253,6 +255,13 @@ void
 MemberLteAsSapProvider<C>::SendDataToGroup (Ptr<Packet> packet, uint32_t group)
 {
   m_owner->DoSendDataToGroup (packet, group);
+}
+
+template <class C>
+void
+MemberLteAsSapProvider<C>::SetPsc (uint32_t psc)
+{
+  m_owner->DoSetPsc (psc);
 }
 
 template <class C>
