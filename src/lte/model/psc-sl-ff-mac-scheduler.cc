@@ -1280,7 +1280,6 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
       uint32_t comm_app = 0;
       for (std::map <uint16_t,uint32_t>::iterator userIt = poolIt->second.m_ceSlBsrRxed.begin (); userIt != poolIt->second.m_ceSlBsrRxed.end (); userIt++)
       {
-        NS_LOG_INFO ("USER IS " << userIt->first);
           if (psc[userIt->first])
               psc_app ++;
           else
@@ -1312,6 +1311,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
       NS_LOG_INFO ("NUM APPS " << alloc_comm << " " << alloc_psc << " " << max_ues << " " << psc_app << " " << comm_app);
 
       std::map <uint16_t,uint32_t>::iterator it;
+      uint8_t counter = 0;
 
       //for (it = poolIt->second.m_ceSlBsrRxed.begin (); it != poolIt->second.m_ceSlBsrRxed.end (); it++)
         it = poolIt->second.m_ceSlBsrRxed.begin ();
@@ -1364,11 +1364,14 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
               //new allocation
               PoolUserAllocation alloc;
               alloc.m_rnti = it->first;
-              alloc.m_resPscch = poolIt->second.m_nextAllocation.size ();
+              //alloc.m_resPscch = poolIt->second.m_nextAllocation.size ();
+              alloc.m_resPscch = counter;
               alloc.m_slItrp = m_slItrp;
-              alloc.m_rbStart = poolIt->second.m_nextAllocation.size () * m_slGrantSize;
+              //alloc.m_rbStart = poolIt->second.m_nextAllocation.size () * m_slGrantSize;
+              alloc.m_rbStart = counter * m_slGrantSize;
+              counter ++;
               alloc.m_rbLen = m_slGrantSize;
-
+              NS_LOG_INFO (" Alloc info " << " " << poolIt->second.m_nextAllocation.size () << " " << m_slGrantSize);
               //adjust PSSCH frame to next period
               SidelinkCommResourcePool::SubframeInfo tmp;
               tmp.frameNo = poolIt->second.m_nextScPeriod.frameNo - 1;
@@ -1384,7 +1387,7 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
                 }
 
               poolIt->second.m_nextAllocation.insert (std::pair <uint16_t, PoolUserAllocation> (it->first, alloc));
-              NS_LOG_INFO (this << " Adding Sidelink allocation for RNTI " << it->first << " in pool " << poolIt->first << " RbStart=" << (uint32_t) alloc.m_rbStart << ", rbLen=" << (uint32_t) alloc.m_rbLen << ", itrp=" << (uint32_t) alloc.m_slItrp);
+              NS_LOG_INFO (this << " Adding Sidelink allocation for RNTI "  << it->first << " in pool " << poolIt->first << " RbStart=" << (uint32_t) alloc.m_rbStart << ", rbLen=" << (uint32_t) alloc.m_rbLen << ", itrp=" << (uint32_t) alloc.m_slItrp);
 
 
               SlDciListElement_s dci;
@@ -1446,80 +1449,14 @@ PscSlFfMacScheduler::DoSchedUlTriggerReq (const struct FfMacSchedSapProvider::Sc
           slAllocationMap.at (*rbIt) = 999; //what RNTI to use for PSCCH?
         }
 
-      //check PSSCH allocation for each user in the pool
-      /*
-      uint32_t psc_app = 0;
-      uint32_t comm_app = 0;
-      for (std::map <uint16_t, PoolUserAllocation>::iterator userIt = poolIt->second.m_currentAllocation.begin (); userIt != poolIt->second.m_currentAllocation.end (); userIt++)
-      {
-        NS_LOG_INFO ("USER IS " << userIt->first);
-          if (psc[userIt->first])
-              psc_app ++;
-          else
-              comm_app ++;
-      }
 
-
-      int ran = rand();
-      bool comm = false;
-      //uint32_t num_ues= 0;
-      uint32_t left = max_ues;
-
-      if (ran%psc_imp == 0)
-        comm = true;
-
-      uint32_t alloc_comm = 0;
-      uint32_t alloc_psc = 0;
-
-      if (comm) {
-          alloc_comm = std::min (comm_app, left);
-          left = left - alloc_comm;
-          alloc_psc = std::min (psc_app, left);
-      }
-      else {
-          alloc_psc = std::min (psc_app, left);
-          left = left - alloc_psc;
-          alloc_comm = std::min (comm_app, left);
-      }
-      NS_LOG_INFO ("NUM APPS " << alloc_comm << " " << alloc_psc << " " << max_ues << " " << psc_app << " " << comm_app);
-      */
       for (std::map <uint16_t, PoolUserAllocation>::iterator userIt = poolIt->second.m_currentAllocation.begin (); userIt != poolIt->second.m_currentAllocation.end (); userIt++)
         {
           std::list<SidelinkCommResourcePool::SidelinkTransmissionInfo>::iterator allocIt = userIt->second.m_psschTx.begin ();
           if (allocIt != userIt->second.m_psschTx.end () && (*allocIt).subframe.frameNo == frameNo && (*allocIt).subframe.subframeNo == subframeNo)
             {
-              /*
-              
-              if (!comm) {
-                if (! psc[ userIt->first ]) {
-                  if (alloc_comm == 0)
-                    continue;
-                  else
-                    alloc_comm --;
-                }
-                else {
-                  if (alloc_psc == 0)
-                    continue;
-                  else
-                    alloc_psc --;
-                }
-              }
-              else{
-                if (psc[ userIt->first ]) {
-                  if (alloc_psc == 0)
-                    continue;
-                  else
-                    alloc_psc --;
-                }
-                else {
-                    if (alloc_comm == 0)
-                    continue;
-                  else
-                    alloc_comm --;
-                }
-              }
-              */
-              NS_LOG_INFO (this << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
+  
+              NS_LOG_INFO (this << "PSC " << psc[userIt->first] << " User " << userIt->first <<" FrameNo " << frameNo << " Subframe = " << subframeNo <<" Reserving RBs for Sidelink PSSCH from " << (uint32_t) (*allocIt).rbStart << " to " << (uint32_t) ((*allocIt).rbStart + (*allocIt).nbRb - 1));
               
               
               for (int j = (*allocIt).rbStart; j < (*allocIt).rbStart + (*allocIt).nbRb; j++)

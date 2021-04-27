@@ -47,73 +47,6 @@
 
 using namespace ns3;
 
-// This trace will log packet transmissions and receptions from the application
-// layer.  The parameter 'localAddrs' is passed to this trace in case the
-// address passed by the trace is not set (i.e., is '0.0.0.0' or '::').  The
-// trace writes to a file stream provided by the first argument; by default,
-// this trace file is 'UePacketTrace.tr'
-void
-UePacketTrace (Ptr<OutputStreamWrapper> stream, const Address &localAddrs, std::string context, Ptr<const Packet> p, const Address &srcAddrs, const Address &dstAddrs)
-{
-  std::ostringstream oss;
-  *stream->GetStream () << Simulator::Now ().GetNanoSeconds () / (double) 1e9 << "\t" << context << "\t" << p->GetSize () << "\t";
-  if (InetSocketAddress::IsMatchingType (srcAddrs))
-    {
-      oss << InetSocketAddress::ConvertFrom (srcAddrs).GetIpv4 ();
-      if (!oss.str ().compare ("0.0.0.0")) //srcAddrs not set
-        {
-          *stream->GetStream () << Ipv4Address::ConvertFrom (localAddrs) << ":" << InetSocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" << InetSocketAddress::ConvertFrom (dstAddrs).GetIpv4 () << ":" << InetSocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-        }
-      else
-        {
-          oss.str ("");
-          oss << InetSocketAddress::ConvertFrom (dstAddrs).GetIpv4 ();
-          if (!oss.str ().compare ("0.0.0.0")) //dstAddrs not set
-            {
-              *stream->GetStream () << InetSocketAddress::ConvertFrom (srcAddrs).GetIpv4 () << ":" << InetSocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" <<  Ipv4Address::ConvertFrom (localAddrs) << ":" << InetSocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-            }
-          else
-            {
-              *stream->GetStream () << InetSocketAddress::ConvertFrom (srcAddrs).GetIpv4 () << ":" << InetSocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" << InetSocketAddress::ConvertFrom (dstAddrs).GetIpv4 () << ":" << InetSocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-            }
-        }
-    }
-  else if (Inet6SocketAddress::IsMatchingType (srcAddrs))
-    {
-      oss << Inet6SocketAddress::ConvertFrom (srcAddrs).GetIpv6 ();
-      if (!oss.str ().compare ("::")) //srcAddrs not set
-        {
-          *stream->GetStream () << Ipv6Address::ConvertFrom (localAddrs) << ":" << Inet6SocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" << Inet6SocketAddress::ConvertFrom (dstAddrs).GetIpv6 () << ":" << Inet6SocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-        }
-      else
-        {
-          oss.str ("");
-          oss << Inet6SocketAddress::ConvertFrom (dstAddrs).GetIpv6 ();
-          if (!oss.str ().compare ("::")) //dstAddrs not set
-            {
-              *stream->GetStream () << Inet6SocketAddress::ConvertFrom (srcAddrs).GetIpv6 () << ":" << Inet6SocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" << Ipv6Address::ConvertFrom (localAddrs) << ":" << Inet6SocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-            }
-          else
-            {
-              *stream->GetStream () << Inet6SocketAddress::ConvertFrom (srcAddrs).GetIpv6 () << ":" << Inet6SocketAddress::ConvertFrom (srcAddrs).GetPort () << "\t" << Inet6SocketAddress::ConvertFrom (dstAddrs).GetIpv6 () << ":" << Inet6SocketAddress::ConvertFrom (dstAddrs).GetPort () << std::endl;
-            }
-        }
-    }
-  else
-    {
-      *stream->GetStream () << "Unknown address type!" << std::endl;
-    }
-}
-
-/*
- * The topology is the following:
- *
- *    UE2 (-10.0, 0.0, 1.5).....(10 m).....eNB (0.0, 0.0, 30.0).....(10 m).....UE1 (10.0, 0.0, 1.5)
- *
- * Please refer to the Sidelink section of the LTE user documentation for more details.
- *
- */
-
 NS_LOG_COMPONENT_DEFINE ("LteSlInCovrgCommMode1");
 
 int main (int argc, char *argv[])
@@ -122,8 +55,11 @@ int main (int argc, char *argv[])
   bool enableNsLogs = false;
   bool useIPv6 = false;
   uint32_t grantSize = 10;
+
+  // Set uplink Bandwidth
   uint32_t ulBandwidth = 100;
-  int num_psc = 5;
+  int num_psc = 3;
+  // Max number of UEs allocated per subframe
   uint32_t max_ues = ulBandwidth / grantSize;
 
   CommandLine cmd;
@@ -136,7 +72,8 @@ int main (int argc, char *argv[])
   Config::SetDefault ("ns3::PscSlFfMacScheduler::MaxUEs", UintegerValue (max_ues));
   Config::SetDefault ("ns3::PscSlFfMacScheduler::Itrp", UintegerValue (0));
   //The number of RBs allocated per UE for Sidelink
-  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (grantSize));
+  Config::SetDefault ("ns3::PscSlFfMacScheduler::SlGrantSize", UintegerValue (grantSize)); 
+  // Importance given to PSC application over Commercial
   Config::SetDefault ("ns3::PscSlFfMacScheduler::PscImp", UintegerValue (2));
 
 
@@ -169,27 +106,6 @@ int main (int argc, char *argv[])
       LogComponentEnable ("LteEnbPhy", logLevel);
     }
     LogComponentEnable ("PscSlFfMacScheduler", LOG_LEVEL_INFO);
-      //  LogComponentEnable ("LteEnbMac", LOG_LEVEL_INFO);
-       // LogComponentEnable ("NoOpComponentCarrierManager", LOG_LEVEL_INFO);
-      //LogComponentEnable ("LteUePhy", LOG_LEVEL_ALL);
-         //   LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
-
-//LogComponentEnable ("UdpL4Protocol", LOG_LEVEL_ALL);
-//LogComponentEnable ("UdpSocketImpl", LOG_LEVEL_ALL);
-//LogComponentEnable ("Ipv4L3Protocol", LOG_LEVEL_ALL);
-//LogComponentEnable ("OnOffApplication", LOG_LEVEL_ALL);
-//LogComponentEnable ("LteNetDevice", LOG_LEVEL_ALL);
-//LogComponentEnable ("Ipv4Interface", LOG_LEVEL_ALL);
-//LogComponentEnable ("EpcUeNas", LOG_LEVEL_ALL);
-//LogComponentEnable ("LteUeRrc", LOG_LEVEL_ALL);
-//LogComponentEnable ("LtePdcp", LOG_LEVEL_ALL);
-//LogComponentEnable ("LteRlc", LOG_LEVEL_ALL);
-//LogComponentEnable ("LteRlcUm", LOG_LEVEL_ALL);
-//LogComponentEnable ("LteUeMac", LOG_LEVEL_ALL);
-
-
-
-
 
   //Set the UEs power in dBm
   Config::SetDefault ("ns3::LteUePhy::TxPower", DoubleValue (23.0));
@@ -224,7 +140,7 @@ int main (int argc, char *argv[])
   enbNode.Create (1);
   NS_LOG_INFO ("eNb node id = [" << enbNode.Get (0)->GetId () << "]");
   NodeContainer ueNodes;
-  const int num_d2d = 11;
+  const int num_d2d = 12;
   ueNodes.Create (num_d2d * 2);
   for (uint32_t i= 0 ; i< ueNodes.GetN () ; i++) {
       NS_LOG_INFO ("UE " << i+1 << " node id = [" << ueNodes.Get (i)->GetId () << "]");
@@ -233,12 +149,7 @@ int main (int argc, char *argv[])
     //Position of the nodes
   Ptr<ListPositionAllocator> positionAllocEnb = CreateObject<ListPositionAllocator> ();
   positionAllocEnb->Add (Vector (0.0, 0.0, 30.0));
-/*
-  Ptr<ListPositionAllocator> positionAllocUe1 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe1->Add (Vector (10.0, 0.0, 1.5));
-  Ptr<ListPositionAllocator> positionAllocUe2 = CreateObject<ListPositionAllocator> ();
-  positionAllocUe2->Add (Vector (-10.0, 0.0, 1.5));
-*/
+
 
   //Install mobility
   MobilityHelper mobilityeNodeB;
@@ -257,18 +168,6 @@ int main (int argc, char *argv[])
         mobilityUe.SetPositionAllocator (positionAllocUe);
         mobilityUe.Install (ueNodes.Get (i));
     }
-
-/*
-  MobilityHelper mobilityUe1;
-  mobilityUe1.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe1.SetPositionAllocator (positionAllocUe1);
-  mobilityUe1.Install (ueNodes.Get (0));
-
-  MobilityHelper mobilityUe2;
-  mobilityUe2.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-  mobilityUe2.SetPositionAllocator (positionAllocUe2);
-  mobilityUe2.Install (ueNodes.Get (1));
-*/
 
   //Install LTE devices to the nodes and fix the random number stream
   int64_t randomStream = 1;
@@ -369,29 +268,29 @@ int main (int argc, char *argv[])
 
   ///*** Configure applications ***///
 
-  //Set Application in the UEs
-  OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
-  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 0);
-
+  //Set Application in the 
+  
   ApplicationContainer clientApps[num_d2d];
 
-  for (int i = 0 ; i < num_psc ; ++i) {
-    clientApps[i] =  sidelinkClient.Install (ueNodes.Get (i));
-    clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
-    clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
-  }
-  
-    OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
+  //PSC Application
+  OnOffHelper sidelinkClientPsc ("ns3::UdpSocketFactory", remoteAddress);
   sidelinkClientPsc.SetConstantRate (DataRate ("16kb/s"), 200, 1);
 
-    for (int i = num_psc ; i < num_d2d ; ++i) {
+  for (int i = 0 ; i < num_psc ; ++i) {
     clientApps[i] =  sidelinkClientPsc.Install (ueNodes.Get (i));
     clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
     clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
   }
   
-  //onoff application will send the first packet at :
-  //(2.9 (App Start Time) + (1600 (Pkt size in bits) / 16000 (Data rate)) = 3.0 sec
+  //Commercial Application
+  OnOffHelper sidelinkClient ("ns3::UdpSocketFactory", remoteAddress);
+  sidelinkClient.SetConstantRate (DataRate ("16kb/s"), 200, 0);
+
+    for (int i = num_psc ; i < num_d2d ; ++i) {
+    clientApps[i] =  sidelinkClient.Install (ueNodes.Get (i));
+    clientApps[i].Start (slBearersActivationTime + Seconds (0.9));
+    clientApps[i].Stop (simTime - slBearersActivationTime + Seconds (1.0));
+  }
 
     ApplicationContainer serverApps [num_d2d];
     PacketSinkHelper sidelinkSink ("ns3::UdpSocketFactory", localAddress);
@@ -401,79 +300,10 @@ int main (int argc, char *argv[])
     serverApps[i].Start (Seconds (2.0));
   }
 
-
-
   proseHelper->ActivateSidelinkBearer (slBearersActivationTime, ueDevs, tft);
   ///*** End of application configuration ***///
 
-  AsciiTraceHelper ascii;
-  Ptr<OutputStreamWrapper> stream = ascii.CreateFileStream ("UePacketTrace.tr");
-
-  //Trace file table header
-  *stream->GetStream () << "time(sec)\ttx/rx\tNodeID\tIMSI\tPktSize(bytes)\tIP[src]\tIP[dst]" << std::endl;
-
   std::ostringstream oss;
-
-  if (!useIPv6)
-    {
-      // Set Tx traces
-      for ( int j = 0; j < num_d2d ; ++j) {
-          for (uint16_t ac = 0; ac < clientApps[j].GetN (); ac++)
-                  {
-                    Ipv4Address localAddrs =  clientApps[j].Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
-                    std::cout << "Tx address: " << localAddrs << std::endl;
-                    oss << "tx\t" << ueNodes.Get (0)->GetId () << "\t" << ueNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
-                    clientApps[j].Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
-                    oss.str ("");
-                  }
-      }
-      
-
-
-
-      // Set Rx traces
-    for ( int j = 0; j < num_d2d ; ++j) {
-
-      for (uint16_t ac = 0; ac < serverApps[j].GetN (); ac++)
-        {
-          Ipv4Address localAddrs =  serverApps[j].Get (ac)->GetNode ()->GetObject<Ipv4L3Protocol> ()->GetAddress (1,0).GetLocal ();
-          std::cout << "Rx address: " << localAddrs << std::endl;
-          oss << "rx\t" << ueNodes.Get (1)->GetId () << "\t" << ueNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
-          serverApps[j].Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
-          oss.str ("");
-        }
-    }
-
-    }
-  else
-    {
-      // Set Tx traces
-      for ( int j = 0; j < num_d2d ; ++j) {
-      for (uint16_t ac = 0; ac < clientApps[j].GetN (); ac++)
-        {
-          clientApps[j].Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
-          Ipv6Address localAddrs =  clientApps[j].Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
-          std::cout << "Tx address: " << localAddrs << std::endl;
-          oss << "tx\t" << ueNodes.Get (0)->GetId () << "\t" << ueNodes.Get (0)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
-          clientApps[j].Get (ac)->TraceConnect ("TxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
-          oss.str ("");
-        }
-      }
-
-      // Set Rx traces
-    for ( int j = 0; j < num_d2d ; ++j) {
-
-      for (uint16_t ac = 0; ac < serverApps[j].GetN (); ac++)
-        {
-          serverApps[j].Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->AddMulticastAddress (groupAddress6);
-          Ipv6Address localAddrs =  serverApps[j].Get (ac)->GetNode ()->GetObject<Ipv6L3Protocol> ()->GetAddress (1,1).GetAddress ();
-          std::cout << "Rx address: " << localAddrs << std::endl;
-          oss << "rx\t" << ueNodes.Get (1)->GetId () << "\t" << ueNodes.Get (1)->GetDevice (0)->GetObject<LteUeNetDevice> ()->GetImsi ();
-          serverApps[j].Get (ac)->TraceConnect ("RxWithAddresses", oss.str (), MakeBoundCallback (&UePacketTrace, stream, localAddrs));
-          oss.str ("");
-        }
-    }
-    }
 
   NS_LOG_INFO ("Enabling Sidelink traces...");
   lteHelper->EnableSidelinkTraces ();
